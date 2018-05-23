@@ -1,12 +1,13 @@
 DESCRIPTION
 ==================================================
-The ```nbody``` library - a library to identify potential neigbor particles using Linked-Cell Lists with a time cost O(N).
+The ```nblists``` library - a library to identify potential neigbor particles using Linked-Cell Lists in a time O(N).
+
 
 GETTING THE CODE
 ==================================================
 * To get the code:
 ```
-git clone git@github.com:pgniewko/nbody.git
+git clone git@github.com:pgniewko/nblists.git
 ```
 
 * To obtain the most recent version of the code:
@@ -39,10 +40,10 @@ The command will result with a binary file run_nbody. Execute this file to run a
 
 * To run the exe file type in a command line (refer the code snippet below for the meaning of the arguments):
 ```
-./nbody  
+./run_nblists  
 ```
 
-* An example of how to use the ```nbody``` library: 
+* An example of how to use the ```nblists``` library: 
 ```C++
 ...
 

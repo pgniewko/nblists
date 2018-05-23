@@ -3,8 +3,8 @@ MKDIR	    := mkdir -p
 # C compiler
 CC	     	:= g++-4.9
 
-STATIC		:=libnbody.a
-EXE			:=run_nbody
+STATIC		:=libnblists.a
+EXE			:=run_nblists
 
 SRC			:=./src
 INCLUDE     :=/Users/pawel/include
