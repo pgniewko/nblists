@@ -64,5 +64,5 @@ License: BSD
 
 REFERENCES
 ===============
-1. ...
-2. ...
+1. "Computer Simulations of Liquids", M.P. Allen, D.J. Tildesley, 1987, Oxford University Press, Chapter 5.3
+2. "Understanding Molecular Simulation: From Algorithms to Applications", D.Frenkel, B. Smit.2002, Elsevier, Appendix F
