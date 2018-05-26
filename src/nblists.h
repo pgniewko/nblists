@@ -4,7 +4,10 @@
 #include <iostream>
 #include <cstdlib>
 #include <math.h>
-#include "domain_list_t.h"
-#include "domain_t.h"
+
+struct nblists_t
+{
+
+};
 
 #endif  /* NBLIST_T_H */

@@ -4,7 +4,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <math.h>
-#include "nblist_t.h"
+#include "nblists.h"
 
 struct config_t
 {
@@ -32,8 +32,7 @@ struct domain_list_t
     int* neighs_num = nullptr;
     int** neighbors = nullptr;
 
-    int* HEAD;
-    int* LIST;
+    int* HEAD = nullptr;
 
     domain_list_t() = delete;
     domain_list_t(int,bool);
@@ -41,7 +40,9 @@ struct domain_list_t
     void init_domains();
     int get_index(int,int,int);
     void set_system_dims(double,double,int);
- 
+
+    nblists_t* get_nb_lists(double*,double*,double*,int,double);
+    int get_domain_index(double,double,double);
 
     void print()
     {
@@ -73,13 +74,7 @@ struct domain_list_t
         
         if ( HEAD ) delete[] HEAD;
         HEAD = nullptr;
-        
-        if ( LIST ) delete[] LIST;
-        LIST = nullptr;
-       
-       
     }
-
 };
 
 #endif  /* DOMAIN_LIST_T_H */

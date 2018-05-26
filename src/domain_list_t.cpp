@@ -1,20 +1,24 @@
 #include "domain_list_t.h"
 
+
 domain_list_t::domain_list_t(int m, bool pbc)
 {
     cfg.M = m;
     cfg.DIM = 3;
     cfg.PBC = pbc;
 
-    cfg.N = cfg.M *cfg.M * cfg.M;
-    
+    cfg.N = cfg.M*cfg.M*cfg.M;
+
     init_domains();
 }
+
 
 void domain_list_t::init_domains()
 {
     if ( ! this->initialized )
     {
+        this->HEAD = new int[this->cfg.N];
+
         this->neighs_num = new int[this->cfg.N];
         this->neighbors = new int*[this->cfg.N];
 
@@ -57,6 +61,36 @@ void domain_list_t::init_domains()
     
         this->initialized = true;
     }
+}
+
+
+nblists_t* domain_list_t::get_nb_lists(double* x,double* y, double* z, int n, double sigma)
+{
+    int domain_idx;
+    for (int i = 0; i < this->cfg.N; i++)
+        this->HEAD[i] = -1;
+    
+    int* LIST = new int[n];
+   
+    double rx, ry, rz;
+    for (int i = 0; i < n; i++)
+    {
+        rx = x[i];
+        ry = y[i];
+        rz = z[i];
+        domain_idx = get_domain_index(rx, ry, rz);
+        LIST[i] = this->HEAD[domain_idx];
+        this->HEAD[domain_idx] = i;
+    }
+
+    for (int i = 0; i < this->cfg.N; i++)
+        std::cout << "HEAD[" << i << "]" << " " << HEAD[i] << std::endl;
+    
+    for (int i = 0; i < n; i++)
+        std::cout << "LIST[" << i << "]" << " " << LIST[i] << std::endl;
+
+    delete[] LIST;
+    return nullptr;
 }
 
 int domain_list_t::get_index(int i, int j, int k)
@@ -138,4 +172,22 @@ void domain_list_t::set_system_dims(double min_v, double max_v, int axis)
         this->cfg.zmin = min_v;
         this->cfg.zmax = max_v;
     }
+}
+
+
+int domain_list_t::get_domain_index(double rx, double ry, double rz)
+{
+    int xix, yix, zix;
+    double dx = (this->cfg.xmax - this->cfg.xmin)/this->cfg.M;
+    double dy = (this->cfg.ymax - this->cfg.ymin)/this->cfg.M;
+    double dz = (this->cfg.zmax - this->cfg.zmin)/this->cfg.M;
+    
+    double delx = rx - this->cfg.xmin;
+    double dely = ry - this->cfg.ymin;
+    double delz = rz - this->cfg.zmin;
+    xix = floor(delx / dx);
+    yix = floor(dely / dy);
+    zix = floor(delz / dz);
+    return this->get_index(xix, yix, zix);
+
 }
