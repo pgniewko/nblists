@@ -4,18 +4,20 @@
 #include <iostream>
 #include <cstdlib>
 #include <math.h>
-#include "mc.h"
 
 struct domain_t
 {
-    domain_t()
-    {
-        myid = -1;
-    }
-
     int myid;
     int neigh_num;
-    domain_t* next = NULL;
+    domain_t* n_ds = nullptr;
+    
+    domain_t() : myid(-1), neigh_num(0) {}
+
+    ~domain_t()
+    {
+        if (n_ds ) delete[] n_ds;
+        n_ds = nullptr;
+    }
 };
 
 #endif  /* DOMAIN_T_H */
