@@ -1,17 +1,18 @@
 RM          := rm -f
 MKDIR	    := mkdir -p
 # C compiler
-CC	     	:= g++-4.9
+CC	     	:= g++
 
 STATIC		:=libnblists.a
 EXE			:=run_nblists
 
 SRC			:=./src
-INCLUDE     :=/Users/pawel/include
+PREFIX      := /usr/local
+INCLUDE     :=$(PREFIX)/include
 
 CFLAGS 		:= -O3 -I$(INCLUDE)
 CXXFLAGS	:= -O3 -std=gnu++11 -I$(INCLUDE)
-LDLIBS   	:= -lnbody 
+LDLIBS   	:= -lnblists 
 
 SOURCES	     := $(shell find $(SRC) -type f -name "*.cpp" -or -name "*.c")
 
@@ -19,7 +20,6 @@ HEADERS	     := $(shell find $(SRC) -type f -name "*.h" -not -name "fastmath.h" 
 
 OBJECTS      := $(patsubst %.cpp,%.o,$(patsubst %.c,%.o, $(SOURCES) ))
 
-PREFIX   := /usr/local
 
 $(STATIC): $(OBJECTS)
 	@echo "[Link (Static)]"
@@ -28,11 +28,11 @@ $(STATIC): $(OBJECTS)
 
 $(EXE): main.cpp
 	@echo [Building exe]
-	$(CC) -o $@ $^ $(CXXFLAGS) -I$(SRC) $(LDLIBS)
+	$(CC) -o $@ $^ $(CXXFLAGS) -I$(INCLUDE) $(LDLIBS)
 
 %.o: %.cpp %.h
 	@echo [Compile C++ files] $<
-	$(CC) -c $(CFLAGS) $< -o $@
+	$(CC) -c $(CXXFLAGS) $< -o $@
 
 %.o: %.c %.h
 	@echo [Compile C files] $<
