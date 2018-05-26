@@ -47,8 +47,8 @@ struct domain_list_t
     {
         for (int i = 0; i < this->cfg.N; i++)
         {
-            std::cout << this->neighs_num[i] << std::endl;
-            std::cout << i << " ";
+            std::cout << "#n (" << i << ") = " << this->neighs_num[i] << ": ";
+
             for (int j = 0; j < this->neighs_num[i]; j++)
             {
                 std::cout << this->neighbors[i][j]  << " ";
