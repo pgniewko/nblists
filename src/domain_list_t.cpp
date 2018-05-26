@@ -120,11 +120,81 @@ pairs_t domain_list_t::get_nb_lists(double* x,double* y, double* z, int n, doubl
                     j = this->LIST[j];
                 }
             }
-            i = LIST[i];
+            i = this->LIST[i];
         }
     }
  
     return pairs;
+}
+
+
+std::vector<int> domain_list_t::get_nb_lists(int idx)
+{
+    std::vector<int> pairs;
+    int j, idomain, n_idomain;
+    
+    idomain = this->node_to_domain[idx];
+
+    j = this->LIST[ HEAD[idomain] ];
+    // Iterate over particles in the same domain
+    while(j > -1)
+    {
+        if (idx != j)
+            pairs.push_back(j);
+        
+        j = this->LIST[j];
+    }
+
+    // Iterate over neighbor domains
+    for (int nix = 0; nix < this->neighs_num[idomain]; nix++)
+    {
+        n_idomain = this->neighbors[idomain][nix];
+        j = this->HEAD[n_idomain];
+        while(j > -1)
+        {
+            pairs.push_back(j);
+            j = this->LIST[j];
+        }
+    }
+    return pairs; 
+}
+
+void domain_list_t::update_domain_for_node(double* x, double *y, double* z, int idx)
+{
+    int j, old_domain_idx, new_domain_idx;
+    old_domain_idx = this->node_to_domain[idx];
+    double rx, ry, rz;
+    rx = *x;
+    ry = *y;
+    rz = *z;
+
+    new_domain_idx = get_domain_index(rx, ry, rz);
+    if (old_domain_idx == new_domain_idx)
+       return;
+
+    if ( this->HEAD[old_domain_idx] == idx )
+    {
+       this->HEAD[old_domain_idx] = this->LIST[idx];
+    }
+    else
+    {
+        j = this->HEAD[old_domain_idx];
+        while( true ) // It should stop naturally
+        {
+            if (this->LIST[j] == idx)
+            {
+                this->LIST[j] = this->LIST[idx];
+                break;
+            }
+            j = this->LIST[j];
+        }
+    }
+
+    this->node_to_domain[idx] = new_domain_idx;
+    this->LIST[idx] = this->HEAD[new_domain_idx];
+    this->HEAD[new_domain_idx] = idx;
+    
+    return;
 }
 
 int domain_list_t::get_index(int i, int j, int k)
