@@ -4,7 +4,9 @@
 #include <iostream>
 #include <cstdlib>
 #include <math.h>
-#include "nblists.h"
+#include <vector>
+
+typedef std::vector<std::vector<int>> pairs_t;
 
 struct config_t
 {
@@ -31,9 +33,11 @@ struct domain_list_t
     bool initialized = false;
     int* neighs_num = nullptr;
     int** neighbors = nullptr;
+    int* node_to_domain = nullptr;
 
     int* HEAD = nullptr;
-
+    int* LIST = nullptr;
+  
     domain_list_t() = delete;
     domain_list_t(int,bool);
    
@@ -41,7 +45,7 @@ struct domain_list_t
     int get_index(int,int,int);
     void set_system_dims(double,double,int);
 
-    nblists_t* get_nb_lists(double*,double*,double*,int,double);
+    pairs_t get_nb_lists(double*,double*,double*,int,double);
     int get_domain_index(double,double,double);
 
     void print()
@@ -66,14 +70,19 @@ struct domain_list_t
         if ( neighbors )
         {
             for(int i = 0; i < this->cfg.N; i++)
-                delete[] neighbors[i];
-            
+                delete[] neighbors[i];    
             delete[] neighbors;
         }
         neighbors = nullptr;
         
-        if ( HEAD ) delete[] HEAD;
-        HEAD = nullptr;
+        if ( this->HEAD ) delete[] this->HEAD;
+        this->HEAD = nullptr;
+        
+        if ( this->LIST ) delete[] this->LIST;
+        this->LIST = nullptr;
+
+        if ( this->node_to_domain ) delete[] this->node_to_domain; 
+        this->node_to_domain = nullptr;
     }
 };
 

@@ -1,14 +1,12 @@
 #include "domain_list_t.h"
 
 
-domain_list_t::domain_list_t(int m, bool pbc)
+domain_list_t::domain_list_t(int m, bool pbc) 
 {
     cfg.M = m;
     cfg.DIM = 3;
     cfg.PBC = pbc;
-
     cfg.N = cfg.M*cfg.M*cfg.M;
-
     init_domains();
 }
 
@@ -26,9 +24,7 @@ void domain_list_t::init_domains()
             this->neighs_num[i] = 0;
 
         for (int i = 0; i < this->cfg.N; i++)
-        {
             this->neighbors[i] = new int[26];
-        }
 
 
         int index;
@@ -36,27 +32,26 @@ void domain_list_t::init_domains()
         int current_n_ix;
         
         for (int i=0; i < this->cfg.M; i++) {
-            for (int j=0; j < this->cfg.M; j++) {
-                for (int k=0; k < this->cfg.M; k++) {
+          for (int j=0; j < this->cfg.M; j++) {
+            for (int k=0; k < this->cfg.M; k++) {
                
-                index = get_index(i, j, k);
+              index = get_index(i, j, k);
                 
-                for (int l = -1; l <= 1; l++)
-                    for (int o = -1; o <= 1; o++)
-                        for (int p = -1; p <= 1; p++)
-                        {
-                            n_ix = get_index(i + l, j + o, k + p);
-                            if (n_ix != -1 && n_ix != index)
-                            {
-                                current_n_ix = this->neighs_num[index];   
-                                this->neighbors[ index ][ current_n_ix ] = n_ix;
-                                this->neighs_num[index] += 1;
-
-                            }    
-                        }
+              for (int l = -1; l <= 1; l++)
+                for (int o = -1; o <= 1; o++)
+                  for (int p = -1; p <= 1; p++)
+                  {
+                    n_ix = get_index(i + l, j + o, k + p);
+                    if (n_ix != -1 && n_ix != index)
+                    {
+                      current_n_ix = this->neighs_num[index];   
+                      this->neighbors[ index ][ current_n_ix ] = n_ix;
+                      this->neighs_num[index] += 1;
+                    }    
+                  }
                 
-                }
             }
+          }
         }
     
         this->initialized = true;
@@ -64,14 +59,27 @@ void domain_list_t::init_domains()
 }
 
 
-nblists_t* domain_list_t::get_nb_lists(double* x,double* y, double* z, int n, double sigma)
+pairs_t domain_list_t::get_nb_lists(double* x,double* y, double* z, int n, double sigma)
 {
+    pairs_t pairs;
+    for (int i = 0; i < n; i++)
+    {
+        std::vector<int> row;
+        pairs.push_back( row );
+    }
+    // make sure that domains are initialized
+
+    //
     int domain_idx;
     for (int i = 0; i < this->cfg.N; i++)
-        this->HEAD[i] = -1;
-    
-    int* LIST = new int[n];
-   
+        this->HEAD[i] = -1; // If -1 then the domain is empty
+
+    if (!this->LIST)
+        this->LIST = new int[n];
+ 
+    for (int i = 0; i < n; i++)
+        this->LIST[i] = -1;
+
     double rx, ry, rz;
     for (int i = 0; i < n; i++)
     {
@@ -79,18 +87,44 @@ nblists_t* domain_list_t::get_nb_lists(double* x,double* y, double* z, int n, do
         ry = y[i];
         rz = z[i];
         domain_idx = get_domain_index(rx, ry, rz);
+
+        this->node_to_domain[i] = domain_idx; // In which domain a particle is sitting
         LIST[i] = this->HEAD[domain_idx];
         this->HEAD[domain_idx] = i;
     }
 
-    for (int i = 0; i < this->cfg.N; i++)
-        std::cout << "HEAD[" << i << "]" << " " << HEAD[i] << std::endl;
-    
-    for (int i = 0; i < n; i++)
-        std::cout << "LIST[" << i << "]" << " " << LIST[i] << std::endl;
+    int i,j,n_idomain;
+    for (int idomain = 0; idomain < this->cfg.N; idomain++)
+    {
+        i = HEAD[idomain];
+        while(i > -1) // Iterate over all particles in idomain
+        {
+            j = this->LIST[i];
+            // Iterate over particles in the same domain
+            while(j > -1)
+            {
+                pairs[i].push_back(j);
+                pairs[j].push_back(i);
+                j = this->LIST[j];
+            }
 
-    delete[] LIST;
-    return nullptr;
+            // Iterate over neighbor domains
+            for (int nix = 0; nix < this->neighs_num[idomain]; nix++)
+            {
+                n_idomain = this->neighbors[idomain][nix];
+                j = this->HEAD[n_idomain];
+                while(j > -1)
+                {
+                    pairs[i].push_back(j);
+                    pairs[j].push_back(i);
+                    j = this->LIST[j];
+                }
+            }
+            i = LIST[i];
+        }
+    }
+ 
+    return pairs;
 }
 
 int domain_list_t::get_index(int i, int j, int k)
