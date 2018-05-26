@@ -4,11 +4,14 @@
 #include <iostream>
 #include <cstdlib>
 #include <math.h>
-#include "domain_t.h"
 #include "nblist_t.h"
 
 struct config_t
 {
+    config_t() : N(0),M(0),DIM(0),PBC(true),
+                 xmin(0),xmax(0),ymin(0),ymax(0),
+                 zmin(0),zmax(0){}
+
     int N;
     int M;
     int DIM;
@@ -26,17 +29,55 @@ struct domain_list_t
 {
     config_t cfg;
     bool initialized = false;
-    domain_t* domains = nullptr;
+    int* neighs_num = nullptr;
+    int** neighbors = nullptr;
+
+    int* HEAD;
+    int* LIST;
 
     domain_list_t() = delete;
-    domain_list_t(int,int,bool);
+    domain_list_t(int,bool);
    
     void init_domains();
+    int get_index(int,int,int);
+    void set_system_dims(double,double,int);
+ 
+
+    void print()
+    {
+        for (int i = 0; i < this->cfg.N; i++)
+        {
+            std::cout << this->neighs_num[i] << std::endl;
+            std::cout << i << " ";
+            for (int j = 0; j < this->neighs_num[i]; j++)
+            {
+                std::cout << this->neighbors[i][j]  << " ";
+            }
+            std::cout << std::endl;
+        }
+    }
 
     ~domain_list_t()
     {
-        if ( domains ) delete[] domains;
-        domains = nullptr;
+        if ( neighs_num ) delete[] neighs_num;
+        neighs_num = nullptr;
+       
+        if ( neighbors )
+        {
+            for(int i = 0; i < this->cfg.N; i++)
+                delete[] neighbors[i];
+            
+            delete[] neighbors;
+        }
+        neighbors = nullptr;
+        
+        if ( HEAD ) delete[] HEAD;
+        HEAD = nullptr;
+        
+        if ( LIST ) delete[] LIST;
+        LIST = nullptr;
+       
+       
     }
 
 };
