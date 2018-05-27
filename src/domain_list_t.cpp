@@ -165,16 +165,12 @@ std::vector<int> domain_list_t::get_nb_lists(int idx)
     return pairs; 
 }
 
-void domain_list_t::update_domain_for_node(double* x, double *y, double* z, int idx)
+void domain_list_t::update_domain_for_node(double x, double y, double z, int idx)
 {
     int j, old_domain_idx, new_domain_idx;
     old_domain_idx = this->node_to_domain[idx];
-    double rx, ry, rz;
-    rx = *x;
-    ry = *y;
-    rz = *z;
 
-    new_domain_idx = get_domain_index(rx, ry, rz);
+    new_domain_idx = get_domain_index(x, y, z);
     if (old_domain_idx == new_domain_idx)
        return;
 

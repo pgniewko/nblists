@@ -48,7 +48,7 @@ struct domain_list_t
     void set_system_dims(double,double,int);
     pairs_t get_nb_lists(double*,double*,double*,int,double);
     std::vector<int> get_nb_lists(int);
-    void update_domain_for_node(double*, double *, double*, int);
+    void update_domain_for_node(double, double, double, int);
     int get_domain_index(double,double,double);
     bool check_size(double);
 
