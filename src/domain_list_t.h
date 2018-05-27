@@ -6,7 +6,7 @@
 #include <math.h>
 #include <vector>
 
-typedef std::vector<std::vector<int>> pairs_t;
+typedef std::vector< std::vector< int > > pairs_t;
 
 struct config_t
 {
@@ -47,7 +47,7 @@ struct domain_list_t
     int get_index(int,int,int);
     void set_system_dims(double,double,int);
     pairs_t get_nb_lists(double*,double*,double*,int,double);
-    std::vector<int> get_nb_lists(int);
+    std::vector< int > get_nb_lists(int);
     void update_domain_for_node(double, double, double, int);
     int get_domain_index(double,double,double);
     bool check_size(double);

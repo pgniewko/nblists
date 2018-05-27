@@ -68,7 +68,7 @@ pairs_t domain_list_t::get_nb_lists(double* x,double* y, double* z, int n, doubl
     pairs_t pairs;
     for (int i = 0; i < n; i++)
     {
-        std::vector<int> row;
+        std::vector< int > row;
         pairs.push_back( row );
     }
     // make sure that domains are initialized
@@ -134,9 +134,9 @@ pairs_t domain_list_t::get_nb_lists(double* x,double* y, double* z, int n, doubl
 }
 
 
-std::vector<int> domain_list_t::get_nb_lists(int idx)
+std::vector< int > domain_list_t::get_nb_lists(int idx)
 {
-    std::vector<int> pairs;
+    std::vector< int > pairs;
     int j, idomain, n_idomain;
     
     idomain = this->node_to_domain[idx];
