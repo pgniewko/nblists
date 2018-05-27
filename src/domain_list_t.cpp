@@ -61,6 +61,10 @@ void domain_list_t::init_domains()
 
 pairs_t domain_list_t::get_nb_lists(double* x,double* y, double* z, int n, double sigma)
 {
+
+    if ( ! check_size(sigma) )
+        std::cout << "SIGMA > DOMAIN SIZE! CALCULATION MAY BE ERRONEOUS" << std::endl;
+
     pairs_t pairs;
     for (int i = 0; i < n; i++)
     {
@@ -68,7 +72,6 @@ pairs_t domain_list_t::get_nb_lists(double* x,double* y, double* z, int n, doubl
         pairs.push_back( row );
     }
     // make sure that domains are initialized
-
     //
     int domain_idx;
     for (int i = 0; i < this->cfg.N; i++)
@@ -79,6 +82,10 @@ pairs_t domain_list_t::get_nb_lists(double* x,double* y, double* z, int n, doubl
  
     for (int i = 0; i < n; i++)
         this->LIST[i] = -1;
+   
+    if(!this->node_to_domain)
+        this->node_to_domain = new int[n];
+    
 
     double rx, ry, rz;
     for (int i = 0; i < n; i++)
@@ -87,13 +94,12 @@ pairs_t domain_list_t::get_nb_lists(double* x,double* y, double* z, int n, doubl
         ry = y[i];
         rz = z[i];
         domain_idx = get_domain_index(rx, ry, rz);
-
         this->node_to_domain[i] = domain_idx; // In which domain a particle is sitting
         LIST[i] = this->HEAD[domain_idx];
         this->HEAD[domain_idx] = i;
     }
 
-    int i,j,n_idomain;
+    int i, j, n_idomain;
     for (int idomain = 0; idomain < this->cfg.N; idomain++)
     {
         i = HEAD[idomain];
@@ -116,7 +122,7 @@ pairs_t domain_list_t::get_nb_lists(double* x,double* y, double* z, int n, doubl
                 while(j > -1)
                 {
                     pairs[i].push_back(j);
-                    pairs[j].push_back(i);
+                    //pairs[j].push_back(i);
                     j = this->LIST[j];
                 }
             }
@@ -293,5 +299,16 @@ int domain_list_t::get_domain_index(double rx, double ry, double rz)
     yix = floor(dely / dy);
     zix = floor(delz / dz);
     return this->get_index(xix, yix, zix);
+}
 
+bool domain_list_t::check_size(double sigma)
+{
+    if ( (this->cfg.xmax - this->cfg.xmin)/this->cfg.M < sigma )
+        return false;
+    if ( (this->cfg.ymax - this->cfg.ymin)/this->cfg.M < sigma )
+        return false;
+    if ( (this->cfg.zmax - this->cfg.zmin)/this->cfg.M < sigma )
+        return false;
+
+    return true;
 }

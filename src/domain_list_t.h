@@ -37,33 +37,22 @@ struct domain_list_t
 
     int* HEAD = nullptr;
     int* LIST = nullptr;
-  
+ 
+    // CONSTRUCTORS
     domain_list_t() = delete;
     domain_list_t(int,bool);
    
+    // PUBLIC METHODS
     void init_domains();
     int get_index(int,int,int);
     void set_system_dims(double,double,int);
-
     pairs_t get_nb_lists(double*,double*,double*,int,double);
     std::vector<int> get_nb_lists(int);
     void update_domain_for_node(double*, double *, double*, int);
-
     int get_domain_index(double,double,double);
+    bool check_size(double);
 
-//    void print()
-//    {
-//        for (int i = 0; i < this->cfg.N; i++)
-//        {
-//            std::cout << "#n (" << i << ") = " << this->neighs_num[i] << ": ";
-//            for (int j = 0; j < this->neighs_num[i]; j++)
-//            {
-//                std::cout << this->neighbors[i][j]  << " ";
-//            }
-//            std::cout << std::endl;
-//        }
-//    }
-
+    // DESTRUCTOR
     ~domain_list_t()
     {
         if ( neighs_num ) delete[] neighs_num;
