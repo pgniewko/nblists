@@ -141,7 +141,7 @@ std::vector<int> domain_list_t::get_nb_lists(int idx)
     
     idomain = this->node_to_domain[idx];
 
-    j = this->LIST[ HEAD[idomain] ];
+    j =  HEAD[idomain];
     // Iterate over particles in the same domain
     while(j > -1)
     {
