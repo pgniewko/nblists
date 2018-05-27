@@ -51,19 +51,18 @@ struct domain_list_t
 
     int get_domain_index(double,double,double);
 
-    void print()
-    {
-        for (int i = 0; i < this->cfg.N; i++)
-        {
-            std::cout << "#n (" << i << ") = " << this->neighs_num[i] << ": ";
-
-            for (int j = 0; j < this->neighs_num[i]; j++)
-            {
-                std::cout << this->neighbors[i][j]  << " ";
-            }
-            std::cout << std::endl;
-        }
-    }
+//    void print()
+//    {
+//        for (int i = 0; i < this->cfg.N; i++)
+//        {
+//            std::cout << "#n (" << i << ") = " << this->neighs_num[i] << ": ";
+//            for (int j = 0; j < this->neighs_num[i]; j++)
+//            {
+//                std::cout << this->neighbors[i][j]  << " ";
+//            }
+//            std::cout << std::endl;
+//        }
+//    }
 
     ~domain_list_t()
     {
