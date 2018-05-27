@@ -22,7 +22,7 @@ pairs_t naive_contacts(double* x, double* y, double* z, int n)
     return pairs;
 }
 
-void compare(double*x, double*y, double*z, pairs_t pairs1, pairs_t pairs2, int n, double sigma)
+void test(double*x, double*y, double*z, pairs_t pairs1, pairs_t pairs2, int n, double sigma)
 {
     pairs_t contacts1;
     pairs_t contacts2;
@@ -104,7 +104,7 @@ void compare(double*x, double*y, double*z, pairs_t pairs1, pairs_t pairs2, int n
         }
     }
 
-    std::cout << "TEST PASSED !" << std::endl;
+    std::cout << "TEST - PASSED !" << std::endl;
 }
 
 int main(int argc, char** argv)
@@ -143,11 +143,26 @@ int main(int argc, char** argv)
     pairs_t nbl = dl.get_nb_lists(x,y,z,n,sigma);
 
     // CHECK THE CORRECTNESS
-    compare(x,y,z,pairs_naive, nbl,n,sigma);
+    test(x,y,z,pairs_naive, nbl,n,sigma);
 
 
     // SCRAMBLING TEST GOES BELOW 
-    // ...
+    int p_idx, n_scrumbled = 50;
+    for (int i = 0; i < n_scrumbled; i++)
+    {
+        p_idx = rand() % n;
+        x[p_idx] = distribution(generator);
+        y[p_idx] = distribution(generator);
+        z[p_idx] = distribution(generator);
+        dl.update_domain_for_node(x[p_idx], y[p_idx], z[p_idx], p_idx);
+    }
+
+
+    pairs_t pairs_naive_scrambled = naive_contacts(x, y, z, n);
+    pairs_t nbl_scrambled = dl.get_nb_lists(x,y,z,n,sigma);
+
+    // CHECK THE CORRECTNESS
+    test(x, y, z,pairs_naive_scrambled, nbl_scrambled, n,sigma);
 
 
     delete[] x;
