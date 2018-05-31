@@ -57,7 +57,7 @@ gniewko.pablo@gmail.com for an information about credits or check my [website](h
 COPYRIGHT NOTICE
 ================
 Copyright (C) 2018, Pawel Gniewek  
-Email  : gniewko.pablo@gmail.com 
+Email  : gniewko.pablo@gmail.com    
 All rights reserved.  
 License: BSD  
 
