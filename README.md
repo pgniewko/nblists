@@ -1,7 +1,8 @@
 DESCRIPTION
 ==================================================
 The ```nblists``` library - a library to identify potential neigbor particles using Linked-Cell Lists in a time O(N).
-
+The library may find a use in all sorts of particle-based simulations with short-ranged interactions, such as:
+[Molecular dynamics](https://en.wikipedia.org/wiki/Molecular_dynamics) for [Granular Materials](https://en.wikipedia.org/wiki/Granular_material), or [Smoothed-particle hydrodynamics](https://en.wikipedia.org/wiki/Smoothed-particle_hydrodynamics).
 
 GETTING THE CODE
 ==================================================
