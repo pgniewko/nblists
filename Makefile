@@ -1,7 +1,7 @@
 RM          := rm -f
 MKDIR	    := mkdir -p
 # C compiler
-CC	     	:= g++
+CC	     	:= g++-4.9
 
 STATIC		:=libnblists.a
 EXE			:=run_nblists
