@@ -1,7 +1,7 @@
 #include "domain_list_t.h"
 
 
-domain_list_t::domain_list_t(int m, bool pbc) 
+domain_list_t::domain_list_t(int m, bool pbc)
 {
     cfg.M = m;
     cfg.DIM = 3;
@@ -25,55 +25,67 @@ void domain_list_t::init_domains()
 
         int index;
         int n_ix;
-        
-        for (int i = 0; i < cfg.M; i++) {
-          for (int j = 0; j < cfg.M; j++) {
-            for (int k = 0; k < cfg.M; k++) {
-               
-              index = get_index(i, j, k);
-                
-              for (int l = -1; l <= 1; l++)
-                for (int o = -1; o <= 1; o++)
-                  for (int p = -1; p <= 1; p++)
-                  {
-                    n_ix = get_index(i + l, j + o, k + p);
-                    if (n_ix != -1 && n_ix != index)
-                    {  
-                      neighbors[index].push_back(n_ix);
-                      neighs_num[index] += 1;
-                    }    
-                  }
+
+        for (int i = 0; i < cfg.M; i++)
+        {
+            for (int j = 0; j < cfg.M; j++)
+            {
+                for (int k = 0; k < cfg.M; k++)
+                {
+
+                    index = get_index(i, j, k);
+
+                    for (int l = -1; l <= 1; l++)
+                        for (int o = -1; o <= 1; o++)
+                            for (int p = -1; p <= 1; p++)
+                            {
+                                n_ix = get_index(i + l, j + o, k + p);
+
+                                if (n_ix != -1 && n_ix != index)
+                                {
+                                    neighbors[index].push_back(n_ix);
+                                    neighs_num[index] += 1;
+                                }
+                            }
+                }
             }
-          }
         }
-    
+
         initialized = true;
     }
 }
 
 
-pairs_t domain_list_t::get_nb_lists(dbl_vec x, dbl_vec y, dbl_vec z, int n, double sigma)
+pairs_t domain_list_t::get_nb_lists(dbl_vec& x, dbl_vec& y, dbl_vec& z, int n, double sigma)
 {
 
     if (!initialized)
+    {
         std::cout << "DOMAINS STRUCTURE IS NOT INITIALIZED YET!" << std::endl;
-        
+    }
+
     if ( ! check_size(sigma) )
+    {
         std::cout << "SIGMA > DOMAIN SIZE! CALCULATION MAY BE ERRONEOUS" << std::endl;
+    }
 
     pairs_t pairs;
+
     for (int i = 0; i < n; i++)
     {
         int_vec row;
         pairs.push_back( row );
     }
+
     // make sure that domains are initialized
     //
     for (int i = 0; i < cfg.N; i++)
-        HEAD[i] = -1; // If -1 then the domain is empty
+    {
+        HEAD[i] = -1;    // If -1 then the domain is empty
+    }
 
-    
-    if(LIST.size() == 0)
+
+    if (LIST.size() == 0)
     {
         for (int i = 0; i < n; i++)
         {
@@ -85,21 +97,23 @@ pairs_t domain_list_t::get_nb_lists(dbl_vec x, dbl_vec y, dbl_vec z, int n, doub
         for (int i = 0; i < n; i++)
         {
             LIST[i] = -1;
-        } 
+        }
     }
-    
-    
+
+
     int domain_idx;
-    if(node_to_domain.size() == 0)
+
+    if (node_to_domain.size() == 0)
     {
         for (int i = 0; i < n; i++)
         {
             node_to_domain.push_back(0);
         }
     }
-    
+
 
     double rx, ry, rz;
+
     for (int i = 0; i < n; i++)
     {
         rx = x[i];
@@ -112,14 +126,17 @@ pairs_t domain_list_t::get_nb_lists(dbl_vec x, dbl_vec y, dbl_vec z, int n, doub
     }
 
     int i, j, n_idomain;
+
     for (int idomain = 0; idomain < cfg.N; idomain++)
     {
         i = HEAD[idomain];
-        while(i > -1) // Iterate over all particles in idomain
+
+        while (i > -1) // Iterate over all particles in idomain
         {
             j = LIST[i];
+
             // Iterate over particles in the same domain
-            while(j > -1)
+            while (j > -1)
             {
                 pairs[i].push_back(j);
                 pairs[j].push_back(i);
@@ -131,17 +148,19 @@ pairs_t domain_list_t::get_nb_lists(dbl_vec x, dbl_vec y, dbl_vec z, int n, doub
             {
                 n_idomain = neighbors[idomain][nix];
                 j = HEAD[n_idomain];
-                while(j > -1)
+
+                while (j > -1)
                 {
                     pairs[i].push_back(j);
                     //pairs[j].push_back(i);
                     j = LIST[j];
                 }
             }
+
             i = LIST[i];
         }
     }
- 
+
     return pairs;
 }
 
@@ -150,16 +169,19 @@ int_vec domain_list_t::get_nb_lists(int idx)
 {
     int_vec pairs;
     int j, idomain, n_idomain;
-    
+
     idomain = node_to_domain[idx];
 
     j =  HEAD[idomain];
+
     // Iterate over particles in the same domain
-    while(j > -1)
+    while (j > -1)
     {
         if (idx != j)
+        {
             pairs.push_back(j);
-        
+        }
+
         j = LIST[j];
     }
 
@@ -168,13 +190,15 @@ int_vec domain_list_t::get_nb_lists(int idx)
     {
         n_idomain = neighbors[idomain][nix];
         j = HEAD[n_idomain];
-        while(j > -1)
+
+        while (j > -1)
         {
             pairs.push_back(j);
             j = LIST[j];
         }
     }
-    return pairs; 
+
+    return pairs;
 }
 
 void domain_list_t::update_domain_for_node(double x, double y, double z, int idx)
@@ -183,23 +207,28 @@ void domain_list_t::update_domain_for_node(double x, double y, double z, int idx
     old_domain_idx = node_to_domain[idx];
 
     new_domain_idx = get_domain_index(x, y, z);
+
     if (old_domain_idx == new_domain_idx)
-       return;
+    {
+        return;
+    }
 
     if ( HEAD[old_domain_idx] == idx )
     {
-       HEAD[old_domain_idx] = LIST[idx];
+        HEAD[old_domain_idx] = LIST[idx];
     }
     else
     {
         j = HEAD[old_domain_idx];
-        while( true ) // It should stop naturally
+
+        while ( true ) // It should stop naturally
         {
             if (LIST[j] == idx)
             {
                 LIST[j] = LIST[idx];
                 break;
             }
+
             j = LIST[j];
         }
     }
@@ -207,7 +236,7 @@ void domain_list_t::update_domain_for_node(double x, double y, double z, int idx
     node_to_domain[idx] = new_domain_idx;
     LIST[idx] = HEAD[new_domain_idx];
     HEAD[new_domain_idx] = idx;
-    
+
     return;
 }
 
@@ -273,7 +302,7 @@ int domain_list_t::get_index(int i, int j, int k)
     return (i + j * m + k * m * m);
 }
 
-void domain_list_t::set_system_dims(double min_v, double max_v, int axis) 
+void domain_list_t::set_system_dims(double min_v, double max_v, int axis)
 {
     if (axis == 0)
     {
@@ -296,10 +325,10 @@ void domain_list_t::set_system_dims(double min_v, double max_v, int axis)
 int domain_list_t::get_domain_index(double rx, double ry, double rz)
 {
     int xix, yix, zix;
-    double dx = (cfg.xmax - cfg.xmin)/cfg.M;
-    double dy = (cfg.ymax - cfg.ymin)/cfg.M;
-    double dz = (cfg.zmax - cfg.zmin)/cfg.M;
-    
+    double dx = (cfg.xmax - cfg.xmin) / cfg.M;
+    double dy = (cfg.ymax - cfg.ymin) / cfg.M;
+    double dz = (cfg.zmax - cfg.zmin) / cfg.M;
+
     double delx = rx - cfg.xmin;
     double dely = ry - cfg.ymin;
     double delz = rz - cfg.zmin;
@@ -311,12 +340,20 @@ int domain_list_t::get_domain_index(double rx, double ry, double rz)
 
 bool domain_list_t::check_size(double sigma)
 {
-    if ( (cfg.xmax - cfg.xmin)/cfg.M < sigma )
+    if ( (cfg.xmax - cfg.xmin) / cfg.M < sigma )
+    {
         return false;
-    if ( (cfg.ymax - cfg.ymin)/cfg.M < sigma )
+    }
+
+    if ( (cfg.ymax - cfg.ymin) / cfg.M < sigma )
+    {
         return false;
-    if ( (cfg.zmax - cfg.zmin)/cfg.M < sigma )
+    }
+
+    if ( (cfg.zmax - cfg.zmin) / cfg.M < sigma )
+    {
         return false;
+    }
 
     return true;
 }

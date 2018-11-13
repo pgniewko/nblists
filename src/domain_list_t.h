@@ -13,9 +13,9 @@ typedef std::vector< int_vec > pairs_t;
 struct config_t
 {
     config_t() : N(0), M(0), DIM(0), PBC(true),
-                 xmin(0), xmax(0), ymin(0), ymax(0),
-                 zmin(0), zmax(0)
-    {  
+        xmin(0), xmax(0), ymin(0), ymax(0),
+        zmin(0), zmax(0)
+    {
     }
 
     int N;
@@ -41,16 +41,16 @@ struct domain_list_t
 
     int_vec HEAD;
     int_vec LIST;
- 
+
     // CONSTRUCTORS
     domain_list_t() = delete;
     domain_list_t(int, bool);
-   
+
     // PUBLIC METHODS
     void init_domains();
     int get_index(int, int, int);
     void set_system_dims(double, double, int);
-    pairs_t get_nb_lists(dbl_vec, dbl_vec, dbl_vec, int, double);
+    pairs_t get_nb_lists(dbl_vec&, dbl_vec&, dbl_vec&, int, double);
     int_vec get_nb_lists(int);
     void update_domain_for_node(double, double, double, int);
     int get_domain_index(double, double, double);
