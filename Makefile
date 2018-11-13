@@ -1,7 +1,7 @@
 RM          := rm -f
 MKDIR	    := mkdir -p
 # C compiler
-CC	     	:= g++-4.9
+CC	     	:= g++-7
 
 STATIC		:=libnblists.a
 EXE			:=run_nblists
@@ -28,7 +28,7 @@ $(STATIC): $(OBJECTS)
 
 $(EXE): main.cpp
 	@echo [Building exe]
-	$(CC) -o $@ $^ $(CXXFLAGS) -I$(INCLUDE) $(LDLIBS)
+	$(CC) -o $@ $^ $(CXXFLAGS) $(LDLIBS)
 
 %.o: %.cpp %.h
 	@echo [Compile C++ files] $<
