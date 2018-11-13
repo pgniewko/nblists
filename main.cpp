@@ -1,13 +1,14 @@
 #include <stdlib.h>
 #include <domain_list_t.h>
 #include <random>
+#include <algorithm>
 
-pairs_t naive_contacts(double* x, double* y, double* z, int n)
+pairs_t naive_neighbors_list(int n)
 {
     pairs_t pairs;
     for (int i = 0; i < n; i++)
     {
-        std::vector<int> row;
+        int_vec row;
         pairs.push_back( row );
     }
 
@@ -22,14 +23,14 @@ pairs_t naive_contacts(double* x, double* y, double* z, int n)
     return pairs;
 }
 
-void test(double*x, double*y, double*z, pairs_t pairs1, pairs_t pairs2, int n, double sigma)
+void test(dbl_vec x, dbl_vec y, dbl_vec z, pairs_t pairs1, pairs_t pairs2, int n, double sigma)
 {
     pairs_t contacts1;
     pairs_t contacts2;
     for (int i = 0; i < n; i++)
     {
-        std::vector<int> row1;
-        std::vector<int> row2;
+        int_vec row1;
+        int_vec row2;
         contacts1.push_back( row1 );
         contacts2.push_back( row2 );
     }
@@ -38,7 +39,7 @@ void test(double*x, double*y, double*z, pairs_t pairs1, pairs_t pairs2, int n, d
 
     for (int i = 0; i < n; i++)
     {
-        std::vector<int> row = pairs1[i];
+        int_vec row = pairs1[i];
         std::sort ( row.begin(), row.end() );
         for (int j = 0; j < row.size(); j++)
         {
@@ -62,7 +63,7 @@ void test(double*x, double*y, double*z, pairs_t pairs1, pairs_t pairs2, int n, d
     
     for (int i = 0; i < n; i++)
     {
-        std::vector<int> row = pairs2[i];
+        int_vec row = pairs2[i];
         std::sort ( row.begin(), row.end() );
         for (int j = 0; j < row.size(); j++)
         {
@@ -86,8 +87,8 @@ void test(double*x, double*y, double*z, pairs_t pairs1, pairs_t pairs2, int n, d
 
     for (int i = 0; i < n; i++)
     {
-        std::vector<int> row1 = contacts1[i];
-        std::vector<int> row2 = contacts2[i];
+        int_vec row1 = contacts1[i];
+        int_vec row2 = contacts2[i];
         
         if ( row1.size() != row2.size() )
         {
@@ -115,15 +116,15 @@ int main(int argc, char** argv)
     std::uniform_real_distribution<double> distribution(-1.0,1.0);
     
     int n = 10000;
-    double* x = new double[n];
-    double* y = new double[n];
-    double* z = new double[n];
+    dbl_vec x;
+    dbl_vec y;
+    dbl_vec z;
 
     for (int i = 0; i < n; i++)
     {
-        x[i] = distribution(generator);
-        y[i] = distribution(generator);
-        z[i] = distribution(generator);
+        x.push_back(distribution(generator));
+        y.push_back(distribution(generator));
+        z.push_back(distribution(generator));
     }
     
     // CREATE LINKED-DOMAINS
@@ -137,13 +138,13 @@ int main(int argc, char** argv)
   
     
     // GENERATE A NAIVE LIST OF POTENTIAL CONTACTS
-    pairs_t pairs_naive = naive_contacts(x, y, z, n);
+    pairs_t pairs_naive = naive_neighbors_list(n);
 
     // GENERATE A LIST OF CONTACTS WITH NBLISTS
     pairs_t nbl = dl.get_nb_lists(x,y,z,n,sigma);
 
     // CHECK THE CORRECTNESS
-    test(x,y,z,pairs_naive, nbl,n,sigma);
+    test(x,y,z,pairs_naive, nbl, n, sigma);
 
 
     // SCRAMBLING TEST GOES BELOW 
@@ -158,16 +159,11 @@ int main(int argc, char** argv)
     }
 
 
-    pairs_t pairs_naive_scrambled = naive_contacts(x, y, z, n);
-    pairs_t nbl_scrambled = dl.get_nb_lists(x,y,z,n,sigma);
+    pairs_t pairs_naive_scrambled = naive_neighbors_list(n);
+    pairs_t nbl_scrambled = dl.get_nb_lists(x, y, z, n, sigma);
 
     // CHECK THE CORRECTNESS
-    test(x, y, z,pairs_naive_scrambled, nbl_scrambled, n,sigma);
-
-
-    delete[] x;
-    delete[] y;
-    delete[] z;
+    test(x, y, z, pairs_naive_scrambled, nbl_scrambled, n,sigma);
   
     return 0;
 }
