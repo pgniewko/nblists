@@ -9,9 +9,10 @@ EXE			:=run_nblists
 SRC			:=./src
 PREFIX      := /usr/local
 INCLUDE     :=$(PREFIX)/include
+LIBS        :=$(PREFIX)/lib
 
 CFLAGS 		:= -O3 -I$(INCLUDE)
-CXXFLAGS	:= -O3 -std=gnu++11 -I$(INCLUDE)
+CXXFLAGS	:= -O3 -std=gnu++11 -L$(LIBS) -I$(INCLUDE)
 LDLIBS   	:= -lnblists 
 
 SOURCES	     := $(shell find $(SRC) -type f -name "*.cpp" -or -name "*.c")
@@ -51,5 +52,5 @@ clean:
 
 install: $(STATIC)
 	@echo [Installing] $<
-	sudo install -m 755 $(STATIC) $(PREFIX)/lib
-	sudo install -m 755 $(HEADERS) $(PREFIX)/include
+	sudo install -m 755 $(STATIC) $(LIBS)
+	sudo install -m 755 $(HEADERS) $(INCLUDE)
