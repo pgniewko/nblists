@@ -1,3 +1,5 @@
+>Disclaimer: This is special purpose software and it may not be robust in all applications or outside the parameter regime in which it was originally developed.
+
 DESCRIPTION
 ==================================================
 The ```nblists``` library - a library to identify potential neigbor particles using Linked-Cell Lists with a O(N) time cost.
@@ -66,6 +68,7 @@ License: BSD 3
 
 
 REFERENCES
-===============
+==========
 1. "Computer Simulations of Liquids", M.P. Allen, D.J. Tildesley, 1987, Oxford University Press, Chapter 5.3
 2. "Understanding Molecular Simulation: From Algorithms to Applications", D.Frenkel, B.Smit.2002, Elsevier, Appendix:F
+3. "Mechanics of Confined Microbial Populations", P. Gniewek, PhD Thesis, UC Berkeley (2018)
