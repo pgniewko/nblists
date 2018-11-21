@@ -27,7 +27,7 @@ pairs_t naive_neighbors_list(int n)
     return pairs;
 }
 
-void test(dbl_vec x, dbl_vec y, dbl_vec z, pairs_t pairs1, pairs_t pairs2, int n, double sigma)
+void test(dbl_vec xyz, pairs_t pairs1, pairs_t pairs2, int n, double sigma)
 {
     pairs_t contacts1;
     pairs_t contacts2;
@@ -41,21 +41,20 @@ void test(dbl_vec x, dbl_vec y, dbl_vec z, pairs_t pairs1, pairs_t pairs2, int n
     }
 
 
-
     for (int i = 0; i < n; i++)
     {
         int_vec row = pairs1[i];
-        std::sort ( row.begin(), row.end() );
-
+        std::sort (row.begin(), row.end());
+        
         for (int j = 0; j < row.size(); j++)
         {
             int jx = row[j];
-            double x1 = x[i];
-            double y1 = y[i];
-            double z1 = z[i];
-            double x2 = x[jx];
-            double y2 = y[jx];
-            double z2 = z[jx];
+            double x1 = xyz[3*i+0];
+            double y1 = xyz[3*i+1];
+            double z1 = xyz[3*i+2];
+            double x2 = xyz[3*jx+0];
+            double y2 = xyz[3*jx+1];
+            double z2 = xyz[3*jx+2];
             double dx = x1 - x2;
             double dy = y1 - y2;
             double dz = z1 - z2;
@@ -71,17 +70,17 @@ void test(dbl_vec x, dbl_vec y, dbl_vec z, pairs_t pairs1, pairs_t pairs2, int n
     for (int i = 0; i < n; i++)
     {
         int_vec row = pairs2[i];
-        std::sort ( row.begin(), row.end() );
+        std::sort (row.begin(), row.end());
 
         for (int j = 0; j < row.size(); j++)
         {
             int jx = row[j];
-            double x1 = x[i];
-            double y1 = y[i];
-            double z1 = z[i];
-            double x2 = x[jx];
-            double y2 = y[jx];
-            double z2 = z[jx];
+            double x1 = xyz[3*i+0];
+            double y1 = xyz[3*i+1];
+            double z1 = xyz[3*i+2];
+            double x2 = xyz[3*jx+0];
+            double y2 = xyz[3*jx+1];
+            double z2 = xyz[3*jx+2];
             double dx = x1 - x2;
             double dy = y1 - y2;
             double dz = z1 - z2;
@@ -98,7 +97,7 @@ void test(dbl_vec x, dbl_vec y, dbl_vec z, pairs_t pairs1, pairs_t pairs2, int n
     {
         int_vec row1 = contacts1[i];
         int_vec row2 = contacts2[i];
-
+        
         if ( row1.size() != row2.size() )
         {
             std::cout << "ERROR - different number of contacts for i=" << i << std::endl;
@@ -126,15 +125,15 @@ int main(int argc, char** argv)
     std::uniform_real_distribution<double> distribution(-1.0, 1.0);
 
     int n = 10000;
-    dbl_vec x;
+    dbl_vec xyz;
     dbl_vec y;
     dbl_vec z;
 
     for (int i = 0; i < n; i++)
     {
-        x.push_back(distribution(generator));
-        y.push_back(distribution(generator));
-        z.push_back(distribution(generator));
+        xyz.push_back(distribution(generator));
+        xyz.push_back(distribution(generator));
+        xyz.push_back(distribution(generator));
     }
 
     // CREATE LINKED-DOMAINS
@@ -151,30 +150,30 @@ int main(int argc, char** argv)
     pairs_t pairs_naive = naive_neighbors_list(n);
 
     // GENERATE A LIST OF CONTACTS WITH NBLISTS
-    pairs_t nbl = dl.get_nb_lists(x, y, z, n, sigma);
+    pairs_t nbl = dl.get_nb_lists(xyz, n, sigma);
 
     // CHECK THE CORRECTNESS
-    test(x, y, z, pairs_naive, nbl, n, sigma);
+    test(xyz, pairs_naive, nbl, n, sigma);
 
 
     // SCRAMBLING TEST GOES BELOW
-    int p_idx, n_scrumbled = 50;
+    int p_idx, n_scrumbled = n;
 
     for (int i = 0; i < n_scrumbled; i++)
     {
         p_idx = rand() % n;
-        x[p_idx] = distribution(generator);
-        y[p_idx] = distribution(generator);
-        z[p_idx] = distribution(generator);
-        dl.update_domain_for_node(x[p_idx], y[p_idx], z[p_idx], p_idx);
+        xyz[3*p_idx+0] = distribution(generator);
+        xyz[3*p_idx+1] = distribution(generator);
+        xyz[3*p_idx+2] = distribution(generator);
+        dl.update_domain_for_node(xyz[3*p_idx+0], xyz[3*p_idx+1], xyz[3*p_idx+2], p_idx);
     }
 
 
     pairs_t pairs_naive_scrambled = naive_neighbors_list(n);
-    pairs_t nbl_scrambled = dl.get_nb_lists(x, y, z, n, sigma);
+    pairs_t nbl_scrambled = dl.get_nb_lists(xyz, n, sigma);
 
     // CHECK THE CORRECTNESS
-    test(x, y, z, pairs_naive_scrambled, nbl_scrambled, n, sigma);
+    test(xyz, pairs_naive_scrambled, nbl_scrambled, n, sigma);
 
     return 0;
 }

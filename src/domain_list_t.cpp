@@ -56,7 +56,7 @@ void domain_list_t::init_domains()
 }
 
 
-pairs_t domain_list_t::get_nb_lists(dbl_vec& x, dbl_vec& y, dbl_vec& z, int n, double sigma)
+pairs_t domain_list_t::get_nb_lists(dbl_vec& xyz, int n, double sigma)
 {
 
     if (!initialized)
@@ -116,9 +116,9 @@ pairs_t domain_list_t::get_nb_lists(dbl_vec& x, dbl_vec& y, dbl_vec& z, int n, d
 
     for (int i = 0; i < n; i++)
     {
-        rx = x[i];
-        ry = y[i];
-        rz = z[i];
+        rx = xyz[3*i+0];
+        ry = xyz[3*i+1];
+        rz = xyz[3*i+2];
         domain_idx = get_domain_index(rx, ry, rz);
         node_to_domain[i] = domain_idx; // In which domain a particle is sitting
         LIST[i] = HEAD[domain_idx];
@@ -249,7 +249,7 @@ int domain_list_t::get_index(int i, int j, int k)
     {
         return -1;
     }
-    else if (i  >= m  && !pbc)
+    else if (i  >= m && !pbc)
     {
         return -1;
     }
@@ -258,7 +258,7 @@ int domain_list_t::get_index(int i, int j, int k)
     {
         return -1;
     }
-    else if (j  >= m  && !pbc)
+    else if (j  >= m && !pbc)
     {
         return -1;
     }
@@ -267,7 +267,7 @@ int domain_list_t::get_index(int i, int j, int k)
     {
         return -1;
     }
-    else if (k  >= m  && !pbc)
+    else if (k  >= m && !pbc)
     {
         return -1;
     }
@@ -276,7 +276,7 @@ int domain_list_t::get_index(int i, int j, int k)
     {
         i += m;
     }
-    else if (i  >= m  && pbc)
+    else if (i  >= m && pbc)
     {
         i -= m;
     }
@@ -285,7 +285,7 @@ int domain_list_t::get_index(int i, int j, int k)
     {
         j += m;
     }
-    else if (j  >= m  && pbc)
+    else if (j  >= m && pbc)
     {
         j -= m;
     }
@@ -294,7 +294,7 @@ int domain_list_t::get_index(int i, int j, int k)
     {
         k += m;
     }
-    else if (k  >= m  && pbc)
+    else if (k  >= m && pbc)
     {
         k -= m;
     }
