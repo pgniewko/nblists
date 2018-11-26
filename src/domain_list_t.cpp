@@ -56,7 +56,7 @@ void domain_list_t::init_domains()
 }
 
 
-pairs_t domain_list_t::get_nb_lists(dbl_vec& xyz, int n, double sigma)
+pairs_t domain_list_t::get_nb_lists(const dbl_vec& xyz, int n, double sigma)
 {
 
     if (!initialized)

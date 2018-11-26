@@ -50,7 +50,7 @@ struct domain_list_t
     void init_domains();
     int get_index(int, int, int);
     void set_system_dims(double, double, int);
-    pairs_t get_nb_lists(dbl_vec&, int, double);
+    pairs_t get_nb_lists(const dbl_vec&, int, double);
     int_vec get_nb_lists(int);
     void update_domain_for_node(double, double, double, int);
     int get_domain_index(double, double, double);
