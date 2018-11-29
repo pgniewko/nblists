@@ -67,6 +67,11 @@ pairs_t domain_list_t::get_nb_lists(const dbl_vec& xyz, int n, double sigma)
     if ( ! check_size(sigma) )
     {
         std::cout << "SIGMA > DOMAIN SIZE! CALCULATION MAY BE ERRONEOUS" << std::endl;
+        std::cout << "sigma=" << sigma << std::endl;
+        std::cout << cfg.xmin << " " << cfg.xmax << std::endl;
+        std::cout << cfg.ymin << " " << cfg.ymax << std::endl;
+        std::cout << cfg.zmin << " " << cfg.zmax << std::endl;
+        std::cout << cfg.M << std::endl;
     }
 
     pairs_t pairs;
